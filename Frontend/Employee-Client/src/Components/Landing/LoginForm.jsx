@@ -26,16 +26,17 @@ const LoginForm = () => {
         localStorage.setItem("role", role);
         localStorage.setItem("userName", name || (role === "MANAGER" ? "Manager" : "Employee"));
         
-        // Correctly set employeeId for employee role
+        // Correctly set employeeId for employee role, and managerId for manager role
         if (role === "EMPLOYEE") {
           localStorage.setItem("employeeId", id);
+        } else if (role === "MANAGER") {
+          localStorage.setItem("managerId", id);
         }
         
         // Redirect based on role
         if (role === "SUPER_ADMIN") {
           navigate("/superadmindashboard");
         } else if (role === "MANAGER") {
-          localStorage.setItem("managerId", id);
           navigate("/managerdashboard");
         } else if (role === "EMPLOYEE") {
           navigate("/employeedashboard");

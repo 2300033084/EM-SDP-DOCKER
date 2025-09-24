@@ -31,4 +31,12 @@ public class ManagerService {
         Optional<Manager> optionalManager = repo.findById(id);
         return optionalManager.orElse(null);
     }
+    
+    public void updateManager(Manager manager) {
+        repo.save(manager);
+    }
+    
+    public void deleteManager(Long id) {
+        repo.deleteById(id);
+    }
 }

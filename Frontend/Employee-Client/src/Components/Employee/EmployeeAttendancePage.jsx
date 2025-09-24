@@ -13,24 +13,13 @@ const EmployeeAttendancePage = () => {
   const [viewMode, setViewMode] = useState('daily'); // 'daily' or 'range'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [employeeId, setEmployeeId] = useState(null);
+  const employeeId = localStorage.getItem('employeeId'); // Get employeeId once
   const navigate = useNavigate();
-  const employeeName = localStorage.getItem('employeeName') || 'Employee';
-
-  // Get employee ID from auth context or localStorage
-  useEffect(() => {
-    const storedEmployeeId = localStorage.getItem('employeeId');
-    if (!storedEmployeeId) {
-      navigate('/login');
-      return;
-    }
-    setEmployeeId(storedEmployeeId);
-  }, [navigate]);
+  const employeeName = localStorage.getItem('userName') || 'Employee';
 
   // Fetch attendance data
   useEffect(() => {
-    if (!employeeId) return;
-
+    // We can trust that employeeId exists here because of the ProtectedRoute.
     const fetchAttendance = async () => {
       setLoading(true);
       setError('');
@@ -38,14 +27,14 @@ const EmployeeAttendancePage = () => {
         let response;
         if (viewMode === 'daily') {
           const dateStr = selectedDate.toISOString().split('T')[0];
-          response = await axios.get(`/api/attendance/employee/${employeeId}`);
+          response = await axios.get(`http://localhost:8080/api/attendance/employee/${employeeId}`);
           // Filter attendance records for the selected date
           const filtered = response.data.filter(record => record.date === dateStr);
           setAttendances(filtered);
         } else {
           const startStr = rangeStart.toISOString().split('T')[0];
           const endStr = rangeEnd.toISOString().split('T')[0];
-          response = await axios.get(`/api/attendance/employee/${employeeId}/range?startDate=${startStr}&endDate=${endStr}`);
+          response = await axios.get(`http://localhost:8080/api/attendance/employee/${employeeId}/range?startDate=${startStr}&endDate=${endStr}`);
           setAttendances(response.data);
         }
       } catch {
@@ -106,12 +95,17 @@ const EmployeeAttendancePage = () => {
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link href="#" className="text-white">
+              <Nav.Link as={Link} to="/payroll" className="text-white">
+                <i className="bi bi-cash-stack me-2"></i>Payroll
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link as={Link} to="/profile" className="text-white">
                 <i className="bi bi-person-lines-fill me-2"></i>Profile
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link href="#" className="text-white">
+              <Nav.Link as={Link} to="/documents" className="text-white">
                 <i className="bi bi-file-earmark-text me-2"></i>Documents
               </Nav.Link>
             </Nav.Item>

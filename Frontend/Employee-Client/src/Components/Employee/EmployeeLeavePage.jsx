@@ -7,36 +7,31 @@ const EmployeeLeavePage = () => {
     const [leaveRequests, setLeaveRequests] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
-      startDate: '',
-      endDate: '',
-      description: ''
+        startDate: '',
+        endDate: '',
+        description: ''
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [employeeId, setEmployeeId] = useState(null);
+    const employeeId = localStorage.getItem('employeeId'); // Get employeeId once
     const navigate = useNavigate();
-    const employeeName = localStorage.getItem('employeeName') || 'Employee';
+    const employeeName = localStorage.getItem('userName') || 'Employee';
 
     const API_BASE_URL = 'http://localhost:8080';
     
     // Fetch employee's leave requests
     useEffect(() => {
-        const storedEmployeeId = localStorage.getItem('employeeId');
-        if (!storedEmployeeId) {
-            navigate('/login');
-            return;
-        }
-        setEmployeeId(storedEmployeeId);
+        // We can trust that employeeId exists here because of the ProtectedRoute.
         const fetchLeaveRequests = async () => {
             try {
-                const response = await axios.get(`/api/leave-requests/employee/${storedEmployeeId}`);
+                const response = await axios.get(`${API_BASE_URL}/api/leave-requests/employee/${employeeId}`);
                 setLeaveRequests(response.data);
             } catch {
                 setError('Failed to fetch leave requests');
             }
         };
         fetchLeaveRequests();
-    }, [navigate]);
+    }, [employeeId]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -115,12 +110,17 @@ const EmployeeLeavePage = () => {
                             </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#" className="text-white">
+                            <Nav.Link as={Link} to="/payroll" className="text-white">
+                                <i className="bi bi-cash-stack me-2"></i>Payroll
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link as={Link} to="/profile" className="text-white">
                                 <i className="bi bi-person-lines-fill me-2"></i>Profile
                             </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#" className="text-white">
+                            <Nav.Link as={Link} to="/documents" className="text-white">
                                 <i className="bi bi-file-earmark-text me-2"></i>Documents
                             </Nav.Link>
                         </Nav.Item>
