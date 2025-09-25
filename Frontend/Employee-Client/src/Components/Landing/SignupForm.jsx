@@ -29,7 +29,8 @@ const SignupForm = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/manager/addManager", {
+      // FIX: Changed from hardcoded URL to relative path
+      const response = await fetch("/manager/addManager", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +39,8 @@ const SignupForm = () => {
           name: formData.name,
           org: formData.org,
           email: formData.email,
-          password: formData.password,
+          // WARNING: Password is sent/stored in plaintext - this is a major security flaw.
+          password: formData.password, 
         }),
       });
 
@@ -46,10 +48,14 @@ const SignupForm = () => {
         setSuccess("Manager account created successfully! Please log in.");
         setFormData({ name: "", org: "", email: "", password: "", confirmPassword: "" });
       } else {
-        setError("Signup failed. A manager with this email or organization may already exist. Try again.");
+        // Fetch detailed error message if available, otherwise use default message
+        const errorText = await response.text();
+        setError(errorText || "Signup failed. A manager with this email or organization may already exist. Try again.");
       }
     } catch (error) {
-      setError("Network error. Please try again later.");
+      // This catches true network/CORS errors
+      console.error("Signup network error:", error);
+      setError("Network error. Could not connect to the server.");
     }
   };
 

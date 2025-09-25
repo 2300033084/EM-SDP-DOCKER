@@ -15,6 +15,12 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
+      },
+      // ADDED: Proxy rule for /manager routes
+      '/manager': { 
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
       }
     }
   }

@@ -4,8 +4,8 @@ services:
     image: mysql:8
     environment:
       # Database name 'ems' is logical for an Employee Management System
-      MYSQL_ROOT_PASSWORD: Yashodhan@126
-      MYSQL_DATABASE: ems 
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: ems
       # MYSQL_USER: klu
       # MYSQL_PASSWORD: klu
     ports:
@@ -16,10 +16,10 @@ services:
   backend:
     container_name: springboot
     build:
-      # Set context to the root of the Backend code directory
-      context: ./Backend/Employee-Server
-      # Reference the Dockerfile from the project root
-      dockerfile: ../../Backend/backend.Dockerfile
+      # FIX: Set context to the root directory for the correct Dockerfile path
+      context: . 
+      # FIX: Reference the Dockerfile from the project root
+      dockerfile: Backend/backend.Dockerfile
     ports:
       # CRITICAL FIX: Maps host port 2025 to the correct Spring Boot port (8080)
       - "2025:8080" 
