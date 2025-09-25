@@ -3,8 +3,9 @@ services:
     container_name: mysql-db
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: docker
-      MYSQL_DATABASE: studentdb
+      # Database name 'ems' is logical for an Employee Management System
+      MYSQL_ROOT_PASSWORD: Yashodhan@126
+      MYSQL_DATABASE: ems 
       # MYSQL_USER: klu
       # MYSQL_PASSWORD: klu
     ports:
@@ -15,10 +16,13 @@ services:
   backend:
     container_name: springboot
     build:
-      context: ./STUDENTAPI-SPRINGBOOT
-      dockerfile: ../Backend/backend.Dockerfile
+      # Set context to the root of the Backend code directory
+      context: ./Backend/Employee-Server
+      # Reference the Dockerfile from the project root
+      dockerfile: ../../Backend/backend.Dockerfile
     ports:
-      - "2025:2000"
+      # CRITICAL FIX: Maps host port 2025 to the correct Spring Boot port (8080)
+      - "2025:8080" 
     depends_on:
       - mysqldb
     restart: on-failure
@@ -26,9 +30,12 @@ services:
   frontend:
     container_name: react
     build:
-      context: ./STUDENTAPI-REACT
-      dockerfile: ../Frontend/frontend.Dockerfile
+      # Set context to the root of the React application
+      context: ./Frontend/Employee-Client
+      # FIX: The Dockerfile is located inside the context directory
+      dockerfile: ./frontend.Dockerfile 
     ports:
+      # Host port 3000 mapped to Nginx default port (80)
       - "3000:80"
     depends_on:
       - backend
