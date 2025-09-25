@@ -23,7 +23,7 @@ const SuperAdminDashboard = () => {
     const fetchManagers = async () => {
         try {
             setLoading(true);
-            const response = await axios.get("http://localhost:8080/managers/allManagers");
+            const response = await axios.get("http://localhost:8080/manager/allManagers");
             setManagers(response.data);
             setLoading(false);
         } catch (err) {
